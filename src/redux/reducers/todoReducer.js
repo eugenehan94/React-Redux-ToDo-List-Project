@@ -1,8 +1,4 @@
-const initialState = [
-  {
-    text: "",
-  },
-];
+const initialState = [];
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -11,9 +7,19 @@ const reducer = (state = initialState, action) => {
         ...state,
         {
           text: action.text,
+          id: action.id,
+          complete: false,
         },
       ];
+    case "DELETE_TODO":
+      return state.filter((todo) => todo.id !== action.payload);
 
+    case "COMPLETED_TODO":
+      return state.map((todo) =>
+        todo.id === action.payload
+          ? { ...todo, complete: !todo.complete }
+          : todo
+      );
     default:
       return state;
   }

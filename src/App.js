@@ -5,25 +5,54 @@ import { bindActionCreators } from "redux";
 import { todoAction } from "./redux/actions/index";
 function App() {
   const text = useSelector((state) => state.todo);
+
   const dispatch = useDispatch();
-  const { addTodo } = bindActionCreators(todoAction, dispatch);
+  const { addTodo, deleteTodo, completedTodo } = bindActionCreators(
+    todoAction,
+    dispatch
+  );
   const [input, setInput] = useState("");
+
+  const handleSubmit = (id) => {
+    if (input === null || input === "") {
+      return;
+    } else {
+      addTodo(input);
+      setInput("");
+    }
+  };
+
   return (
     <div>
-      <h1>Title</h1>
-
+      <h1>To do list</h1>
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button onClick={() => addTodo(input)}>Add to list</button>
+      <button
+        onClick={() => {
+          handleSubmit(input);
+        }}
+      >
+        Add to list
+      </button>
+      {console.log(text)}
       {text.map((text, index) => {
         return (
-          <div key={index}>
-            <h2>{text.text}</h2>
-            <button onClick={() => console.log(index)}>Delete</button>
-            <h3>{index}</h3>
+          <div key={index} className="todo-choice-wrapper">
+            <h3
+              onClick={() => completedTodo(text.id)}
+              className={`${
+                text.complete === true ? "todo-choice-active" : ""
+              }`}
+            >
+              {text.text}
+            </h3>
+
+            {text.text === null || text.text === "" ? null : (
+              <button onClick={(e) => deleteTodo(text.id)}>Delete</button>
+            )}
           </div>
         );
       })}
